@@ -1,19 +1,16 @@
+#!/usr/bin/env python3.9.6
+
 import time
-from flask import Flask, jsonify
 import praw
 import sqlite3
 import concurrent.futures
-
+from flask import Flask, jsonify
 
 # Initialize Flask app
 app = Flask(__name__)
 
 # Database connection
 DB_NAME = 'reddit_posts.db'
-
-@app.route('/')
-def home():
-    return 'Hello, Reddit Tracker!'
 
 
 def create_reddit_instance(client_id, client_secret, user_agent):
@@ -63,14 +60,20 @@ def store_post_in_database(post):
     conn.close()
 
 
-
 def get_posts_from_database():
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
 
-    # Retrieve all posts from the database
-    cursor.execute('SELECT * FROM posts')
-    posts = cursor.fetchall()
+    # Check if the 'posts' table exists
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='posts'")
+    table_exists = cursor.fetchone()
+
+    if table_exists:
+        # Retrieve all posts from the database
+        cursor.execute('SELECT * FROM posts')
+        posts = cursor.fetchall()
+    else:
+        posts = []
 
     conn.close()
 
@@ -79,6 +82,7 @@ def get_posts_from_database():
 
 @app.route('/posts')
 def get_all_posts():
+    # Fetch posts from the database
     posts = get_posts_from_database()
 
     # Convert posts to a list of dictionaries
@@ -94,37 +98,38 @@ def get_all_posts():
         for post in posts
     ]
 
-    print(post_dicts)
-
     return jsonify(post_dicts)
 
 
 def crawl_and_store_posts(reddit, subreddits):
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        # Create a list to store the futures
-        futures = []
+    while True:
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            # Create a list to store the futures
+            futures = []
 
-        for subreddit_name in subreddits:
-            print(f"Crawling posts from subreddit: {subreddit_name}")
-            subreddit = reddit.subreddit(subreddit_name)
+            for subreddit_name in subreddits:
+                print(f"Crawling posts from subreddit: {subreddit_name}")
+                subreddit = reddit.subreddit(subreddit_name)
 
-            # Get the latest stored post timestamp for the subreddit
-            latest_timestamp = get_latest_timestamp(subreddit_name)
+                # Get the latest stored post timestamp for the subreddit
+                latest_timestamp = get_latest_timestamp(subreddit_name)
 
-            # Submit the crawling task to the executor
-            future = executor.submit(crawl_posts_from_subreddit, subreddit, latest_timestamp)
-            futures.append(future)
+                # Submit the crawling task to the executor
+                future = executor.submit(crawl_posts_from_subreddit, subreddit, latest_timestamp)
+                futures.append(future)
 
-        # Wait for all futures to complete
-        for future in concurrent.futures.as_completed(futures):
-            try:
-                # Retrieve the result of the completed future (if any)
-                result = future.result()
-                if result is not None:
-                    subreddit_name, new_posts_count = result
-                    print(f"Crawling finished for subreddit: {subreddit_name}, New posts stored: {new_posts_count}")
-            except Exception as e:
-                print(f"Exception occurred: {str(e)}")
+            # Wait for all futures to complete
+            for future in concurrent.futures.as_completed(futures):
+                try:
+                    # Retrieve the result of the completed future (if any)
+                    result = future.result()
+                    if result is not None:
+                        subreddit_name, new_posts_count = result
+                        print(f"Crawling finished for subreddit: {subreddit_name}, New posts stored: {new_posts_count}")
+                except Exception as e:
+                    print(f"Exception occurred: {str(e)}")
+
+        time.sleep(60)  # Wait for 60 seconds before checking for new posts again
 
 
 def crawl_posts_from_subreddit(subreddit, latest_timestamp):
@@ -182,10 +187,8 @@ if __name__ == '__main__':
             break
         subreddits_to_track.append(subreddit)
 
-    # Continuously crawl and store posts from the specified subreddits
-    while True:
-        crawl_and_store_posts(reddit, subreddits_to_track)
-        time.sleep(60)  # Wait for 60 seconds before checking for new posts again
+    # Start crawling and storing posts in the background
+    crawler_thread = concurrent.futures.ThreadPoolExecutor().submit(crawl_and_store_posts, reddit, subreddits_to_track)
 
     # Run the Flask app
-    app.run()
+    app.run(debug=True)
