@@ -28,6 +28,7 @@ While the program is working, everything can be seen from the database easily. H
 Here is the subreddits at when the screenshot of the above image is taken:
 <img width="1470" alt="Ekran Resmi 2023-06-20 08 03 13" src="https://github.com/relixia/reddit-app/assets/77904399/1201419c-c003-4c50-bbfe-47dd4422611f">
 
+(In the database picture there is another post seen with the title "54 years after the..." after the one with title "Mass Effect..." but it is not visible here since I forgot to refresh the subreddit page)
 <img width="1470" alt="Ekran Resmi 2023-06-20 08 03 21" src="https://github.com/relixia/reddit-app/assets/77904399/d0c064ba-61b1-4578-a742-03180915ee05">
 
 Here is the screenshot of http://localhost:5000/posts 
