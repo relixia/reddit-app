@@ -34,8 +34,13 @@ Here is the subreddits at when the screenshot of the above image is taken:
 Here is the screenshot of http://localhost:5000/posts 
 <img width="1470" alt="Ekran Resmi 2023-06-20 08 00 34" src="https://github.com/relixia/reddit-app/assets/77904399/a66a6406-8a4b-4371-8ead-880f60d55cda">
 
+PS: Be aware if you are a Macbook user. Since Airplay uses the port 5000 as default, when trying to use the service, the posts can be tracked via database but not via http://localhost:5000 To solve the issue, you have 2 options:
+1) Disable Airplay
+2) Run the server on a different port than 5000 with the code:
+     flask run -p 4999
 
-If you face with any problem, feel free to contact: 
+
+If you face any problem, feel free to contact: 
 bugra-net@hotmail.com
 
 Buğra Çayır
