@@ -10,9 +10,13 @@ Aim: Developing a Python service that provides instant tracking of posts on subr
 
 IMPORTANT!
 To use the service, the user need to gather his account credentials in Reddit. Go to User Settings, and under Safety & Privacy tab, click Manage third-party app authorization link. For the rest, here is a step-by-step demonstration:
-https://www.storybench.org/wp-content/uploads/2018/03/Screen-Shot-2018-02-28-at-5.37.01-PM.png![image](https://github.com/relixia/reddit-app/assets/77904399/3490e837-c5fc-4a61-937b-b8f9fd98518a)
-https://www.storybench.org/wp-content/uploads/2018/03/Screen-Shot-2018-02-28-at-6.55.38-PM.png![image](https://github.com/relixia/reddit-app/assets/77904399/6209b930-039c-4e8a-8e4f-9649490b9256)
-https://www.storybench.org/wp-content/uploads/2018/03/Screen-Shot-2018-02-28-at-7.02.45-PM.png![image](https://github.com/relixia/reddit-app/assets/77904399/9c95b816-8e51-4f5f-8cc4-e96d8bd2d1af)
+![Screen-Shot-2018-02-28-at-5 37 01-PM-e1520217895757-1200x649](https://github.com/relixia/reddit-app/assets/77904399/90732d8f-595d-4d5d-979b-572cab86bd5e)
+
+![Screen-Shot-2018-02-28-at-6 55 38-PM-1200x376](https://github.com/relixia/reddit-app/assets/77904399/2f4170fd-1704-4123-8a69-3fed329cac74)
+
+<img width="903" alt="Screen-Shot-2018-02-28-at-7 02 45-PM" src="https://github.com/relixia/reddit-app/assets/77904399/869e6045-3b68-4228-9892-9d16eedf317f">
+
+
 
 The 14 chars information will be the Client ID, and the 27 chars will be the Client Secret. For the User Agent, you can just enter "deneme" without quotes. 
 Then, the user can write the name of the subreddit that will be tracked. There is no lower or upper limit for the number of subreddits, and all of them will be tracked simultaneously. To see if the service is working properly without waiting for a new post in a subreddit, the last 10 posts of the subreddit also will be saved in the database. Then, the service checks in every 60 seconds to see if there is a new post or not.
